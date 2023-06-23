@@ -1,0 +1,42 @@
+.custom-input {
+    &__wrapper {
+        position: relative;
+        border-radius: 100px;
+        background-color: $white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 8px 8px 10px;
+        border: 1px solid $silver;
+        width: 100%;
+        z-index: 0;
+        max-height: 30px;
+
+        input,
+        select,
+        textarea {
+            font-size: 1rem;
+            font-weight: $regular;
+            color: $shark;
+            border: none;
+            outline: none;
+            width: 100%;
+
+            &::placeholder {
+                color: $silver;
+                font-size: 1rem;
+                font-weight: $regular;
+            }
+        }
+
+    }
+
+    &__icon {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        width: 12px;
+        height: 14px;
+    }
+}

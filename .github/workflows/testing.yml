@@ -1,0 +1,90 @@
+name: laravel-test
+
+on: pull_request
+
+jobs:
+  phpunit-tests:
+    name: Back-end tests
+    runs-on: ubuntu-latest
+    container:
+      image: atlastechnologiesteam/cate_base:7.3
+      credentials:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+    services:
+      database:
+        image: mysql:5.7
+        env:
+          MYSQL_DATABASE: cate_db
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+      cache:
+        image: redis:4.0
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Image Dependencies
+        run: | 
+          sudo apt-get update
+          sudo apt-get install php7.3-sqlite3 -y
+          sudo apt-get install php7.3-redis -y
+          sudo phpenmod sqlite3
+          sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
+
+      - name: Copy Environment Variables
+        run: cp .env.example .env
+
+      - name: Cache Composer packages
+        id: cache-composer
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-cache-composer2-pr-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cache-composer2-pr-
+
+      - name: Composer Install
+        if: steps.cache-composer.outputs.cache-hit != 'true'
+        run: composer install --no-interaction
+
+      - name: Composer Dump Autoload
+        run: composer dump-autoload
+
+      - name: Run PHPUnit Tests
+        run: |
+          ./vendor/bin/phpunit
+  frontend-tests:
+    name: Front-end Tests
+    runs-on: ubuntu-latest
+    container:
+      image: atlastechnologiesteam/cate_base:7.3
+      credentials:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Cache node modules
+        id: cache-node-modules
+        uses: actions/cache@v3
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm install
+
+      - name: Run unit tests
+        run: npm run test:unit

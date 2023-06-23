@@ -1,0 +1,13 @@
+// Setup Related Files
+@import 'config/variables';
+@import 'config/reset';
+@import 'config/mixins';
+@import 'config/animations';
+@import 'config/forms';
+
+// Generic Styles
+@import './main';
+
+// Page Styles
+@import './pages/home';
+@import './pages/breeds'

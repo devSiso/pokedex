@@ -1,0 +1,66 @@
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font: $regular 1.6rem/1 $font-family-sans-serif;
+    color: $white;
+    position: relative;
+    min-height: 100vh;
+    background-size: cover;
+    background-repeat: repeat;
+    background-position: top center;
+    background-image: url('../images/pokemon-texture-wallpaper.jpg');
+    scroll-behavior: smooth;
+
+    &.home {
+        @include background-overlay;
+        background-image: url('../images/homepage-wallpaper--mobile.jpg');
+
+        @include breakpoint('large') {
+            background-image: url('../images/homepage-wallpaper--desktop.jpg');
+            background-size: 105%;
+        }
+    }
+}
+
+
+.container {
+    max-width: $container-max-width;
+    min-width: $container-min-width;
+    margin: 0 auto;
+    padding: 0 2rem;
+
+    @include breakpoint('large') {
+        padding: 0;
+    }
+}
+
+.storybook-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    &__title {
+        margin-bottom: 20px;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(90, 90, 90);
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
